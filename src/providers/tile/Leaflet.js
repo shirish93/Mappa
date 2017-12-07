@@ -1,113 +1,219 @@
-// ----------- 
-// Leaflet v1.0.3 
-// Reference: http://leafletjs.com/reference-1.0.3.html 
-//-----------
+<html>
 
-import { TileMap } from './TileMap';
+<title>HELLO WORLD!</title>
+<script type="text/javascript" src="web3.min.js"></script>
+<script src="https://unpkg.com/mappa-mundi/dist/mappa.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.16/p5.min.js" type="text/javascript"></script>
+<script src="https://mourner.github.io/simplify-js/simplify.js" type="text/javascript"></script>
 
-class Leaflet extends TileMap {
-  constructor(options) {
-    super(options);
-    this.script = 'https://unpkg.com/leaflet@1.0.3/dist/leaflet.js';
-    this.style = 'https://unpkg.com/leaflet@1.0.3/dist/leaflet.css';
-    this.constructor.name == 'Leaflet' && this.init();
-  }
 
-  createMap() {
-    this.map = L.map('mappa', {
-      center: [
-        this.options.lat, this.options.lng
-      ],
-      zoom: this.options.zoom,
-      inertia: false
-    });
-
-    if (!this.options.style) {
-      Leaflet.messages().tiles();
-      this.ready = true;
-    } else {
-      this.tiles = L.tileLayer(this.options.style).addTo(this.map);
-      this.tiles.on('tileload', () => {
-        this.ready = true;
-      });
+<script>
+var urlParams;
+(window.onpopstate = function () {
+    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.search.substring(1);
+    urlParams = {};
+    while (match = search.exec(query))
+       urlParams[decode(match[1])] = decode(match[2]);
+})();
+console.log(urlParams);
+/* global pako */
+const Web3 = require('web3');
+const web3 = new Web3();
+/*
+const address = "https://dom-game-shirish93.c9users.io:8082/";
+web3.setProvider(new web3.providers.HttpProvider(address));
+const target = urlParams['q'];
+const intro = "MTIwLDE1Niw4NSwxNDMsMTkzLDE0LDEzMCw0OCwxNiw2OCwxMjcsMTY1LDExMiwxNjIsMjMsMTU1LDk0LDEwMSwyMzcsMTkxLDMyLDkzLDEwNCw5OSwxMDEsMjAxLDExOCwyMTMsMTYsMTk1LDE5MSwyMTksODAsMTUsMTIyLDE1NCwxMDAsNTAsMjQzLDUwLDMsNjUsMjM4LDIwMSw2NSwxOTIsMTkzLDU5LDIwMCwzNSwxOTksODUsMjIwLDcyLDc1LDE2NiwxMzIsMTY3LDY4LDExNSwyMTUsMTAsMTAyLDEwNSwxMTcsMTc1LDE1OCwzLDE3MSw3Myw5MywyMTIsMjQ0LDg4LDcwLDEzNywxODAsMTE2LDI1MCwyNTMsMTUxLDEyMywxNywyMjMsMjA4LDE4MywxMjIsMjM5LDE5MywxMjQsNTcsOTYsNDIsODYsMTYyLDM2LDExNiw4MywyMjgsNDQsMTA2LDI5LDEwMiw0LDgzLDI5LDIwMCwxNzgsMjEsOSwxODIsMTQ0LDE4LDI0MSwxNTMsMjA5LDIzOSwxNjUsMTI0LDE1MiwxMTIsMzcsMTkxLDE0OSw5MywyNDYsMTY3LDE2NywyLDUwLDU0LDc3LDgzLDE4NCwxODIsMTkyLDEwNywxOTQsMjgsNyw2MiwxNDMsMTExLDY5LDE5Nw==";
+var browser_server_sol_serverContract = web3.eth.contract([{ "constant": true, "inputs": [], "name": "post", "outputs": [], "payable": false, "stateMutability": "pure", "type": "function" }, { "constant": true, "inputs": [], "name": "returnName", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "get", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "newStr", "type": "string" }], "name": "set_zipped", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "get_zipped", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "inputs": [{ "name": "intro", "type": "string" }], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }]);
+var existing = browser_server_sol_serverContract.at(target);
+console.log(existing.get_zipped());
+*/
+// to suit your point format, run search/replace for '.x' and '.y';
+// for 3D version, see 3d branch (configurability would draw significant performance overhead)
+// square distance between 2 points
+/*function getSqDist(p1, p2) {
+    var dx = p1.lat - p2.lat,
+        dy = p1.lon - p2.lon;
+    return dx * dx + dy * dy;
+}
+// square distance from a point to a segment
+function getSqSegDist(p, p1, p2) {
+    var x = p1.lat,
+        y = p1.lon,
+        dx = p2.lat - x,
+        dy = p2.lon - y;
+    if (dx !== 0 || dy !== 0) {
+        var t = ((p.lat - x) * dx + (p.lon - y) * dy) / (dx * dx + dy * dy);
+        if (t > 1) {
+            x = p2.lat;
+            y = p2.lon;
+        } else if (t > 0) {
+            x += dx * t;
+            y += dy * t;
+        }
     }
-    this.canvasOverlay();
-  }
-
-  canvasOverlay() {
-    if (this.tiles) {
-      this.tiles.options.opacity = this.options.opacity;
+    dx = p.lat - x;
+    dy = p.lon - y;
+    return dx * dx + dy * dy;
+}
+// rest of the code doesn't care about point format
+// basic distance-based simplification
+function simplifyRadialDist(points, sqTolerance) {
+    var prevPoint = points[0],
+        newPoints = [prevPoint],
+        point;
+    for (var i = 1, len = points.length; i < len; i++) {
+        point = points[i];
+        if (getSqDist(point, prevPoint) > sqTolerance) {
+            newPoints.push(point);
+            prevPoint = point;
+        }
     }
-
-    L.overlay = L.Layer.extend({
-      onAdd: () => {
-        let overlayPane = overlay.getPane();
-        let _container = L.DomUtil.create('div', 'leaflet-layer');
-        _container.appendChild(this.canvas);
-        overlayPane.appendChild(_container);
-      },
-      drawLayer: () => {}
-    })
-
-    let overlay = new L.overlay();
-    this.map.addLayer(overlay);
-
-    let _canvas = this.canvas.getContext('webgl') || this.canvas.getContext('2d');
-
-    this.map.on('move', () => {
-      var d = this.map.dragging._draggable;
-      d._newPos && (_canvas.canvas.style.transform = 'translate(' + -d._newPos.x + 'px,' + -d._newPos.y + 'px)');
-    })
-  }
-
-  fromLatLngtoPixel(position) {
-    if (this.ready) {
-      let containerPoint = this.map.latLngToContainerPoint(position);
-      return { x: containerPoint.x, y: containerPoint.y };
-    } else {
-      return { x: -100, y: -100 };
+    if (prevPoint !== point) newPoints.push(point);
+    return newPoints;
+}
+function simplifyDPStep(points, first, last, sqTolerance, simplified) {
+    var maxSqDist = sqTolerance,
+        index;
+    for (var i = first + 1; i < last; i++) {
+        var sqDist = getSqSegDist(points[i], points[first], points[last]);
+        if (sqDist > maxSqDist) {
+            index = i;
+            maxSqDist = sqDist;
+        }
     }
-  }
-
-  fromPointToLatLng(...args) {
-    if (this.ready) {
-      return this.map.containerPointToLatLng(args);
-    } else {
-      return { lat: -100, lng: -100 };
+    if (maxSqDist > sqTolerance) {
+        if (index - first > 1) simplifyDPStep(points, first, index, sqTolerance, simplified);
+        simplified.push(points[index]);
+        if (last - index > 1) simplifyDPStep(points, index, last, sqTolerance, simplified);
     }
-  }
+}
+// simplification using Ramer-Douglas-Peucker algorithm
+function simplifyDouglasPeucker(points, sqTolerance) {
+    var last = points.length - 1;
+    var simplified = [points[0]];
+    simplifyDPStep(points, 0, last, sqTolerance, simplified);
+    simplified.push(points[last]);
+    return simplified;
+}
+// both algorithms combined for awesome performance
+function simplify(points, tolerance, highestQuality) {
+    if (points.length <= 2) return points;
+    var sqTolerance = tolerance !== undefined ? tolerance * tolerance : 1;
+    points = highestQuality ? points : simplifyRadialDist(points, sqTolerance);
+    points = simplifyDouglasPeucker(points, sqTolerance);
+    return points;
+}
+// export as AMD module / Node module / browser or worker variable
+if (typeof define === 'function' && define.amd) define(function() { return simplify; });
+else if (typeof module !== 'undefined') {
+    module.exports = simplify;
+    module.exports.default = simplify;
+} else if (typeof self !== 'undefined') self.simplify = simplify;
+else window.simplify = simplify;
+*/
+</script>
 
-  getZoom() {
-    if (this.ready) {
-      return this.map.getZoom()
-    } else {
-      return 0
+
+<body>
+
+<script>
+// Your Google Maps API Key
+var key = 'abcd'
+/*
+var options = {
+}
+*/
+// Create a new Mappa instance using Google.
+var mappa = new Mappa('Leaflet');
+var myMap;
+var canvas;
+var zoomlevel;
+var points = []
+var counter;
+var lastlevel = [];
+var options = {
+  lat: 36.964241,
+  lng: -122.013963,
+  zoom: 18,
+  style: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+}
+function setup(){
+  canvas = createCanvas(800, 700);
+  canvas.oncontextmenu = function (e) {
+    e.preventDefault();
+  };
+  counter = millis();
+  myMap = mappa.tileMap(options);
+  myMap.overlay(canvas);
+  myMap.onChange(update_map);
+  noFill();
+  zoomlevel = myMap.zoom();
+  stroke('#08306b');
+}
+var vertices = [];
+function update_map(){
+ clear();
+  // Draw a line using latLngToPixel() with all the points in the points array.
+  //console.log(points);
+  beginShape();
+  for(var i = 0; i < points.length; i++){
+    var pos = myMap.latLngToPixel(points[i]);
+    vertex(pos.x, pos.y);
+  }
+  endShape();
+  beginShape();
+  for(var i = 0; i < lastlevel.length; i++){
+    var pos = myMap.latLngToPixel(lastlevel[i]);
+    vertex(pos.x, pos.y);
+  }
+  endShape();
+
+  
+  if (zoomlevel != myMap.zoom()){
+    zoomChanged();
+    zoomlevel = myMap.zoom();
+}
+
+}
+function draw(){
+ 
+  // If the mouse right button is pressed, store the current mouse position in an array of points.
+  if (mouseIsPressed) {
+    if (mouseButton == RIGHT){
+		console.log("clicked");
+		var point = myMap.pixelToLatLng(mouseX, mouseY);
+		point.x = point.lat;
+		point.y = point.lng;
+		//points.push(point);
+		lastlevel.push(point);
     }
-  }
-
-  onChange(callback) {
-    if (this.ready) {
-      callback();
-      this.map.on('move', callback);
-    } else {
-      setTimeout(() => {
-        this.onChange(callback);
-      }, 200);
-    }
-  }
-
-  removeOnChange(callback){
-    this.map.off('move', callback);
-  }
-
-  static messages() {
-    return {
-      tiles: () => {
-        console.warn('You are not using any tiles for your map. Try with: http://{s}.tile.osm.org/{z}/' +
-          '{x}/{y}.png')
-      }
-    }
+	update_map()
   }
 }
 
-export { Leaflet };
+function zoomChanged(){
+    points = points.concat(lastlevel);
+    lastlevel = [];
+}
+
+function mouseReleased(){
+	if (millis() - counter > 500 && lastlevel.length >0){
+		console.log(points.length);
+		var simplify_level = map(myMap.zoom(),18,0, 0.00001, .01);
+		console.log("Zoom level: ", simplify_level);
+		lastlevel = simplify(lastlevel, simplify_level, false);
+		console.log("new size: "+lastlevel.length);
+		
+	}
+	counter = millis();
+}
+</script>
+
+</body>
+
+</html>
